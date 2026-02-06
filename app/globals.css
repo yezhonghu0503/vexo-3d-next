@@ -1,0 +1,82 @@
+/* Import Google Fonts */
+@import url('https://fonts.googleapis.com/css2?family=Jost:ital,wght@0,100..900;1,100..900&family=Teko:wght@300..700&display=swap');
+
+/* Teko Font Face */
+@font-face {
+  font-family: 'Teko';
+  font-style: normal;
+  font-weight: 300 700;
+  font-optical-sizing: auto;
+  font-display: swap;
+  src: url('https://fonts.gstatic.com/s/teko/v16/LYjNdG7kmE0gfaN9oQ.woff2') format('woff2');
+  unicode-range: U+0000-00FF, U+0131, U+0152-0153, U+02BB-02BC, U+02C6, U+02DA, U+02DC, U+0304, U+0308, U+0329, U+2000-206F, U+2074, U+20AC, U+2122, U+2191, U+2193, U+2212, U+2215, U+FEFF, U+FFFD;
+}
+
+/* Jost Font Face - Normal */
+@font-face {
+  font-family: 'Jost';
+  font-style: normal;
+  font-weight: 100 900;
+  font-optical-sizing: auto;
+  font-display: swap;
+  src: url('https://fonts.gstatic.com/s/jost/v15/92zPtBhPNqw79o1E9xP.woff2') format('woff2');
+  unicode-range: U+0000-00FF, U+0131, U+0152-0153, U+02BB-02BC, U+02C6, U+02DA, U+02DC, U+0304, U+0308, U+0329, U+2000-206F, U+2074, U+20AC, U+2122, U+2191, U+2193, U+2212, U+2215, U+FEFF, U+FFFD;
+}
+
+/* Jost Font Face - Italic */
+@font-face {
+  font-family: 'Jost';
+  font-style: italic;
+  font-weight: 100 900;
+  font-optical-sizing: auto;
+  font-display: swap;
+  src: url('https://fonts.gstatic.com/s/jost/v15/92zJtBhPNqw73oHt5DlZbQ.woff2') format('woff2');
+  unicode-range: U+0000-00FF, U+0131, U+0152-0153, U+02BB-02BC, U+02C6, U+02DA, U+02DC, U+0304, U+0308, U+0329, U+2000-206F, U+2074, U+20AC, U+2122, U+2191, U+2193, U+2212, U+2215, U+FEFF, U+FFFD;
+}
+
+* {
+  margin: 0;
+  padding: 0;
+  box-sizing: border-box;
+}
+
+body {
+  font-family: 'Jost', -apple-system, BlinkMacSystemFont, 'Segoe UI', 'Roboto', 'Oxygen',
+    'Ubuntu', 'Cantarell', 'Fira Sans', 'Droid Sans', 'Helvetica Neue',
+    sans-serif;
+  font-optical-sizing: auto;
+  -webkit-font-smoothing: antialiased;
+  -moz-osx-font-smoothing: grayscale;
+  background: #0f1419;
+  color: #e2e8f0;
+}
+
+a {
+  color: inherit;
+  text-decoration: none;
+}
+
+button {
+  cursor: pointer;
+  border: none;
+  background: none;
+  font-family: inherit;
+}
+
+input {
+  font-family: inherit;
+}
+
+/* Font utility classes */
+.teko {
+  font-family: 'Teko', sans-serif;
+  font-optical-sizing: auto;
+  font-style: normal;
+}
+
+.jost {
+  font-family: 'Jost', sans-serif;
+  font-optical-sizing: auto;
+  font-style: normal;
+}
+
