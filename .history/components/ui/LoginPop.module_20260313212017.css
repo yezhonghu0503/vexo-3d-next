@@ -1,0 +1,29 @@
+/* 遮罩层 */
+.mask {
+  position: fixed;
+  top: 0;
+  left: 0;
+  width: 100vw;
+  height: 100vh;
+  background-color: rgba(0, 0, 0, 0.6);
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  z-index: 9999;
+  /* 确保在最上层 */
+}
+
+/* 弹窗容器 */
+.modal {
+  background-color: #fff;
+  width: 400px;
+  padding: 32px;
+  border-radius: 12px;
+  box-shadow: 0 8px 32px rgba(0, 0, 0, 0.15);
+}
+
+.bigbox {
+  border: 1px red solid;
+  width: 200px;
+  hight: 200px;
+}

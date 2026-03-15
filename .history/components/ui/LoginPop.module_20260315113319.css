@@ -1,0 +1,78 @@
+/* 遮罩层 */
+.mask {
+  position: fixed;
+  top: 0;
+  left: 0;
+  width: 100vw;
+  height: 100vh;
+  background-color: rgba(0, 0, 0, 0.6);
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  z-index: 9999;
+  /* 确保在最上层 */
+}
+
+/* 弹窗容器 */
+.modal {
+  background: linear-gradient(#0B0D11, #35298F);
+  width: 600px;
+  padding: 32px;
+  border-radius: 12px;
+  box-shadow: 0 8px 32px rgba(0, 0, 0, 0.15);
+
+}
+
+/* 登录框页面 */
+.loginye {
+  background-color: aliceblue;
+  width: 320px;
+  height: 450px;
+  border-radius: 30px;
+  margin-left: 150px;
+}
+
+/* 字体颜色 */
+.ziti {
+  color: black;
+  font-weight: bolder;
+  text-align: center;
+  letter-spacing: 2px;
+}
+
+/* 输入框 */
+.shuru {
+  border-radius: 20px;
+  width: 300px;
+  height: 40px;
+  margin-left: 10px;
+  margin-top: 70px;
+  background-color: rgb(221, 219, 219);
+  border: none;
+  color: rgb(114, 112, 112);
+  padding-left: 20px;
+  font-weight: bolder;
+}
+
+/* 验证码框 */
+.yzm {
+  border-radius: 20px;
+  width: 150px;
+  height: 40px;
+  margin-left: 10px;
+  margin-top: 20px;
+  background-color: rgb(221, 219, 219);
+  border: none;
+  color: rgb(114, 112, 112);
+  padding-left: 20px;
+  font-weight: bolder;
+}
+
+/* 发送验证码 */
+.fsyzm {
+  border: 1 red solid;
+  border-radius: 50px;
+  width: 150px;
+  height: 50px;
+  background-color: yellow;
+}
