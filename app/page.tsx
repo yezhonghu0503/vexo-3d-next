@@ -36,11 +36,21 @@ export default function Home() {
     {
       id: "1",
 
+      title: "Cyberpunk Motorcycle Girl",
+      prompt:
+        "Futuristic style, cyberpunk, neon lights, mechanically enhanced girl riding a hover motorcycle, high detail, 8k resolution",
+      image:
+        "https://images.unsplash.com/photo-1615840287214-7ff58936c4cf?w=800&auto=format&fit=crop&q=60",
+
       type: "realistic",
       resolution: "4k",
     },
     {
       id: "2",
+
+      title: "Low Poly Forest Cabin",
+      prompt:
+        "Low poly style, cozy forest cabin, soft lighting, minimalism, isometric view",
 
       image:
         "https://images.unsplash.com/photo-1516216628259-22240502a800?w=800&auto=format&fit=crop&q=60",
@@ -50,6 +60,10 @@ export default function Home() {
     {
       id: "3",
 
+      title: "Chibi Dragon Warrior",
+      prompt:
+        "Cartoon style, chibi character, small dragon wearing golden armor, cute, 3D rendered, Pixar style",
+
       image:
         "https://images.unsplash.com/photo-1627637819846-52269a8448b1?w=800&auto=format&fit=crop&q=60",
       type: "cartoon",
@@ -57,6 +71,10 @@ export default function Home() {
     },
     {
       id: "4",
+
+      title: "Vintage Typewriter",
+      prompt:
+        "Realistic style, black vintage typewriter with brass details, worn texture, studio lighting",
 
       image:
         "https://images.unsplash.com/photo-1510655610660-3164a66e04d4?w=800&auto=format&fit=crop&q=60",
@@ -66,6 +84,10 @@ export default function Home() {
     {
       id: "5",
 
+      title: "Dream Crystal Castle",
+      prompt:
+        "Fantasy style, crystal castle on floating island, translucent material, glowing particles, epic feel",
+
       image:
         "https://images.unsplash.com/photo-1518709268805-4e9042af9f23?w=800&auto=format&fit=crop&q=60",
       type: "realistic",
@@ -73,6 +95,10 @@ export default function Home() {
     },
     {
       id: "6",
+
+      title: "Mech Armor Helmet",
+      prompt:
+        "Hard surface modeling, sci-fi armor helmet, weathered metal texture, glowing blue eyes, cinematic lighting",
 
       image:
         "https://images.unsplash.com/photo-1542779283-429940ce8336?w=800&auto=format&fit=crop&q=60",
@@ -82,6 +108,10 @@ export default function Home() {
     {
       id: "7",
 
+      title: "Clay Style Kitten",
+      prompt:
+        "Claymation style, cute little kitten playing with yarn ball, fingerprint texture, macro photography",
+
       image:
         "https://images.unsplash.com/photo-1514888286974-6c03e2ca1dba?w=800&auto=format&fit=crop&q=60",
       type: "cartoon",
@@ -89,6 +119,10 @@ export default function Home() {
     },
     {
       id: "8",
+
+      title: "Minimalist Abstract Sculpture",
+      prompt:
+        "Modern art, fluid lines, white marble material, minimalism, soft lighting",
 
       image:
         "https://images.unsplash.com/photo-1554188248-986adbb73be0?w=800&auto=format&fit=crop&q=60",

@@ -47,69 +47,99 @@ const ModelCard: React.FC<ModelProps> = ({
             height={20}
             className={styles.rightsc}
           />
-        </div>
 
-        {/* Hover Overlay - Only visible on hover */}
-        <div className={styles.overlay}>
-          <div className={styles.overlayActions}>
-            {isWorkbench ? (
-              <div className={styles.workbenchActions}>
-                <Button size="icon" className={styles.overlayButton}>
-                  <Download className="h-4 w-4" />
-                </Button>
-                <Button
-                  size="icon"
-                  className={`${styles.overlayButton} ${styles.overlayButtonPurple}`}
-                >
-                  <MoreHorizontal className="h-4 w-4" />
-                </Button>
-              </div>
-            ) : (
-              <Button size="sm" className={styles.reuseButton}>
-                Reuse Prompt
-              </Button>
-            )}
+          <img src={image} alt={title} className={styles.image} />
+
+          {/* Top Badges */}
+          <div className={styles.badges}>
+            <Badge
+              variant="secondary"
+              className={`${styles.badge} ${styles.badgeType}`}
+            >
+              {type === "cartoon"
+                ? "Cartoon"
+                : type === "realistic"
+                  ? "Realistic"
+                  : "Low Poly"}
+            </Badge>
+            <Badge
+              variant="secondary"
+              className={`${styles.badge} ${styles.badgeResolution}`}
+            >
+              {resolution.toUpperCase()}
+            </Badge>
           </div>
-        </div>
-      </div>
 
-      {/* Content Info */}
-      <div className={styles.content}>
-        <div className={styles.titleRow}></div>
-        {/* 头像 */}
-        <Image
-          src={"/image/mmi.jpg"}
-          alt="Model"
-          width={32}
-          height={32}
-          className={styles.examplemimage}
-        />
-        {/* 网名 */}
-        <span>pipi</span>
-        {/* 爱心 */}
-        <Image
-          src={"/image/ax.png"}
-          alt="Model"
-          width={20}
-          height={20}
-          className={styles.axcollect}
-        />
-        <span style={{ fontSize: "16px" }}>25</span>
-
-        {isWorkbench && (
-          <div className={styles.footer}>
-            <span className={styles.footerTime}>2 hours ago</span>
-            <div className={styles.footerActions}>
-              <Button
-                variant="ghost"
-                size="icon"
-                className={styles.footerButton}
-              >
-                <Heart className="h-3.5 w-3.5" />
-              </Button>
+          {/* Hover Overlay - Only visible on hover */}
+          <div className={styles.overlay}>
+            <div className={styles.overlayActions}>
+              {isWorkbench ? (
+                <div className={styles.workbenchActions}>
+                  <Button size="icon" className={styles.overlayButton}>
+                    <Download className="h-4 w-4" />
+                  </Button>
+                  <Button
+                    size="icon"
+                    className={`${styles.overlayButton} ${styles.overlayButtonPurple}`}
+                  >
+                    <MoreHorizontal className="h-4 w-4" />
+                  </Button>
+                </div>
+              ) : (
+                <Button size="sm" className={styles.reuseButton}>
+                  Reuse Prompt
+                </Button>
+              )}
             </div>
           </div>
-        )}
+        </div>
+
+        {/* Content Info */}
+        <div className={styles.content}>
+          <div className={styles.titleRow}></div>
+          {/* 头像 */}
+          <Image
+            src={"/image/mmi.jpg"}
+            alt="Model"
+            width={32}
+            height={32}
+            className={styles.examplemimage}
+          />
+          {/* 网名 */}
+          <span>pipi</span>
+          {/* 爱心 */}
+          <Image
+            src={"/image/ax.png"}
+            alt="Model"
+            width={20}
+            height={20}
+            className={styles.axcollect}
+          />
+          <span style={{ fontSize: "16px" }}>25</span>
+
+          {/* 举个例子 */}
+
+          <div className={styles.titleRow}>
+            <h3 className={styles.title}>{title}</h3>
+            {!isWorkbench && <Box className={styles.boxIcon} />}
+          </div>
+          <p className={styles.prompt}>{prompt}</p>
+
+          {isWorkbench && (
+            <div className={styles.footer}>
+              <span className={styles.footerTime}>2 hours ago</span>
+              <div className={styles.footerActions}>
+                <Button
+                  variant="ghost"
+                  size="icon"
+                  className={styles.footerButton}
+                >
+                  <Heart className="h-3.5 w-3.5" />
+                </Button>
+              </div>
+            </div>
+          )}
+        </div>
       </div>
     </div>
   );
