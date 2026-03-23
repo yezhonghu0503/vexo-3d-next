@@ -5,7 +5,6 @@ import Header from "@/components/Header";
 import styles from "./page.module.css";
 import * as THREE from "three";
 import { GLTFLoader } from "three/examples/jsm/loaders/GLTFLoader.js";
-import { OrbitControls } from "three/examples/jsm/controls/OrbitControls.js";
 
 export default function Workbench() {
   const canvasRef = useRef<HTMLCanvasElement>(null);
@@ -28,55 +27,36 @@ export default function Workbench() {
     renderer.setSize(window.innerWidth, window.innerHeight);
     renderer.setPixelRatio(window.devicePixelRatio);
 
-    // 辅助网格（可注释掉）
+    // 辅助网格（帮你定位）
     const gridHelper = new THREE.GridHelper(20, 20);
     scene.add(gridHelper);
 
-    // 灯光
     const ambientLight = new THREE.AmbientLight(0xffffff, 0.8);
     scene.add(ambientLight);
-    const directionalLight = new THREE.DirectionalLight(0xffffff, 1.2);
+    const directionalLight = new THREE.DirectionalLight(0xffffff, 1);
     directionalLight.position.set(10, 10, 10);
     scene.add(directionalLight);
 
-    // 鼠标控制
-    const controls = new OrbitControls(camera, renderer.domElement);
-    controls.enableDamping = true; // 平滑拖拽
-    controls.dampingFactor = 0.05;
-    controls.screenSpacePanning = false;
-    controls.maxPolarAngle = Math.PI / 2; // 限制垂直旋转角度
-
-    let modelRef: THREE.Group | null = null;
-
     const loader = new GLTFLoader();
     loader.load(
-      "/l-shaped ruin diorama 3d model.glb",
+      "/I-shaped ruin diorama 3d model.glb", // 保持你现在的正确路径
       (gltf) => {
         console.log("✅ 模型加载成功！", gltf);
-        modelRef = gltf.scene;
-        scene.add(modelRef);
-
-        // 自动适配相机
-        const box = new THREE.Box3().setFromObject(modelRef);
-        const center = box.getCenter(new THREE.Vector3());
-        const size = box.getSize(new THREE.Vector3());
-        const maxDim = Math.max(size.x, size.y, size.z);
-        const fov = camera.fov * (Math.PI / 180);
-        const cameraZ = Math.abs(maxDim / Math.sin(fov / 2));
-        camera.position
-          .copy(center)
-          .add(new THREE.Vector3(0, 0, cameraZ * 1.5));
-        controls.target.copy(center); // 让控制中心对准模型
-        controls.update();
+        scene.add(gltf.scene);
+        // 关键：缩小模型 + 居中
+        gltf.scene.scale.set(0.1, 0.1, 0.1);
+        gltf.scene.position.set(0, 0, 0);
       },
       (xhr) => console.log(`📊 加载进度: ${(xhr.loaded / xhr.total) * 100}%`),
       (error) => console.error("❌ 模型加载失败:", error),
     );
 
-    // 动画循环
+    // 相机拉远，确保能看到整个模型
+    camera.position.z = 15;
+    camera.lookAt(0, 0, 0); // 相机看向原点
+
     function animate() {
       requestAnimationFrame(animate);
-      controls.update(); // 必须更新控制器
       renderer.render(scene, camera);
     }
     animate();
@@ -91,7 +71,6 @@ export default function Workbench() {
     return () => {
       window.removeEventListener("resize", handleResize);
       renderer.dispose();
-      controls.dispose();
     };
   }, []);
 
@@ -101,16 +80,7 @@ export default function Workbench() {
       <main className={styles.main}>
         <canvas
           ref={canvasRef}
-          style={{
-            width: "100vw",
-            height: "100vh",
-            display: "block",
-            backgroundColor: "#000",
-            position: "fixed",
-            top: 0,
-            left: 0,
-            zIndex: 1,
-          }}
+          style={{ width: "100vw", height: "100vh", display: "block" }}
         />
       </main>
     </div>

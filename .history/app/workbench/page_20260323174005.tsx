@@ -50,7 +50,7 @@ export default function Workbench() {
 
     const loader = new GLTFLoader();
     loader.load(
-      "/l-shaped ruin diorama 3d model.glb",
+      "/magic circle diorama 3d model.glb",
       (gltf) => {
         console.log("✅ 模型加载成功！", gltf);
         modelRef = gltf.scene;

@@ -5,7 +5,6 @@ import Header from "@/components/Header";
 import styles from "./page.module.css";
 import * as THREE from "three";
 import { GLTFLoader } from "three/examples/jsm/loaders/GLTFLoader.js";
-import { OrbitControls } from "three/examples/jsm/controls/OrbitControls.js";
 
 export default function Workbench() {
   const canvasRef = useRef<HTMLCanvasElement>(null);
@@ -28,7 +27,7 @@ export default function Workbench() {
     renderer.setSize(window.innerWidth, window.innerHeight);
     renderer.setPixelRatio(window.devicePixelRatio);
 
-    // 辅助网格（可注释掉）
+    // 辅助网格
     const gridHelper = new THREE.GridHelper(20, 20);
     scene.add(gridHelper);
 
@@ -39,24 +38,18 @@ export default function Workbench() {
     directionalLight.position.set(10, 10, 10);
     scene.add(directionalLight);
 
-    // 鼠标控制
-    const controls = new OrbitControls(camera, renderer.domElement);
-    controls.enableDamping = true; // 平滑拖拽
-    controls.dampingFactor = 0.05;
-    controls.screenSpacePanning = false;
-    controls.maxPolarAngle = Math.PI / 2; // 限制垂直旋转角度
-
+    // 用来保存模型，方便旋转
     let modelRef: THREE.Group | null = null;
 
     const loader = new GLTFLoader();
     loader.load(
-      "/l-shaped ruin diorama 3d model.glb",
+      "/magic circle diorama 3d model.glb",
       (gltf) => {
         console.log("✅ 模型加载成功！", gltf);
-        modelRef = gltf.scene;
+        modelRef = gltf.scene; // 保存模型
         scene.add(modelRef);
 
-        // 自动适配相机
+        // 自动适配相机，让模型完整显示
         const box = new THREE.Box3().setFromObject(modelRef);
         const center = box.getCenter(new THREE.Vector3());
         const size = box.getSize(new THREE.Vector3());
@@ -66,17 +59,19 @@ export default function Workbench() {
         camera.position
           .copy(center)
           .add(new THREE.Vector3(0, 0, cameraZ * 1.5));
-        controls.target.copy(center); // 让控制中心对准模型
-        controls.update();
+        camera.lookAt(center);
       },
       (xhr) => console.log(`📊 加载进度: ${(xhr.loaded / xhr.total) * 100}%`),
       (error) => console.error("❌ 模型加载失败:", error),
     );
 
-    // 动画循环
+    // 动画循环 + 自动旋转
     function animate() {
       requestAnimationFrame(animate);
-      controls.update(); // 必须更新控制器
+      // 让模型绕竖轴慢慢转
+      if (modelRef) {
+        modelRef.rotation.y += 0.003;
+      }
       renderer.render(scene, camera);
     }
     animate();
@@ -91,7 +86,6 @@ export default function Workbench() {
     return () => {
       window.removeEventListener("resize", handleResize);
       renderer.dispose();
-      controls.dispose();
     };
   }, []);
 
