@@ -6,8 +6,9 @@ import styles from "./page.module.css";
 import * as THREE from "three";
 import { GLTFLoader } from "three/examples/jsm/loaders/GLTFLoader.js";
 import { OrbitControls } from "three/examples/jsm/controls/OrbitControls.js";
+import MainLayout from "@/components/MainLayout";
 
-export default function Workbench() {
+const WorkbenchContent = () => {
   const canvasRef = useRef<HTMLCanvasElement>(null);
 
   useEffect(() => {
@@ -102,17 +103,21 @@ export default function Workbench() {
         <canvas
           ref={canvasRef}
           style={{
-            width: "100vw",
-            height: "100vh",
+            width: "100%",
+            height: "100%",
             display: "block",
             backgroundColor: "#000",
-            position: "fixed",
-            top: 0,
-            left: 0,
-            zIndex: 1,
+            // 删掉 position: fixed、top: 0、left: 0、zIndex: 1
           }}
         />
       </main>
     </div>
+  );
+};
+export default function WorkbenchPage() {
+  return (
+    <MainLayout>
+      <WorkbenchContent />
+    </MainLayout>
   );
 }
