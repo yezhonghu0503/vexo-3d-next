@@ -1,123 +1,98 @@
 "use client";
 
 import { useEffect, useRef } from "react";
-import Header from "@/components/Header";
-import styles from "./page.module.css";
 import * as THREE from "three";
 import { GLTFLoader } from "three/examples/jsm/loaders/GLTFLoader.js";
 import { OrbitControls } from "three/examples/jsm/controls/OrbitControls.js";
-import MainLayout from "@/components/MainLayout";
+import TripoLayout from "@/components/TripoLayout";
 
 const WorkbenchContent = () => {
   const canvasRef = useRef<HTMLCanvasElement>(null);
 
   useEffect(() => {
-    if (!canvasRef.current) return;
+    const canvas = canvasRef.current;
+    if (!canvas) return;
 
     const scene = new THREE.Scene();
-    const camera = new THREE.PerspectiveCamera(
-      75,
-      window.innerWidth / window.innerHeight,
-      0.1,
-      1000,
-    );
+    scene.background = new THREE.Color(0x1e1e1e);
+    const camera = new THREE.PerspectiveCamera(75, 1, 0.1, 1000);
     const renderer = new THREE.WebGLRenderer({
-      canvas: canvasRef.current,
+      canvas: canvas,
       antialias: true,
     });
 
-    renderer.setSize(window.innerWidth, window.innerHeight);
-    renderer.setPixelRatio(window.devicePixelRatio);
-
-    // 辅助网格（可注释掉）
-    const gridHelper = new THREE.GridHelper(20, 20);
-    scene.add(gridHelper);
+    const resize = () => {
+      const w = canvas.clientWidth;
+      const h = canvas.clientHeight;
+      renderer.setSize(w, h, false);
+      camera.aspect = w / h;
+      camera.updateProjectionMatrix();
+    };
+    resize();
+    window.addEventListener("resize", resize);
 
     // 灯光
-    const ambientLight = new THREE.AmbientLight(0xffffff, 0.8);
-    scene.add(ambientLight);
-    const directionalLight = new THREE.DirectionalLight(0xffffff, 1.2);
-    directionalLight.position.set(10, 10, 10);
-    scene.add(directionalLight);
+    scene.add(new THREE.AmbientLight(0xffffff, 0.7));
+    const dirLight = new THREE.DirectionalLight(0xffffff, 1);
+    dirLight.position.set(5, 10, 7);
+    scene.add(dirLight);
 
-    // 鼠标控制
     const controls = new OrbitControls(camera, renderer.domElement);
-    controls.enableDamping = true; // 平滑拖拽
+    controls.enableDamping = true;
     controls.dampingFactor = 0.05;
-    controls.screenSpacePanning = false;
-    controls.maxPolarAngle = Math.PI / 2; // 限制垂直旋转角度
 
-    let modelRef: THREE.Group | null = null;
-
+    let model: THREE.Group | null = null;
     const loader = new GLTFLoader();
+
     loader.load(
       "/l-shaped ruin diorama 3d model.glb",
       (gltf) => {
-        console.log("✅ 模型加载成功！", gltf);
-        modelRef = gltf.scene;
-        scene.add(modelRef);
+        model = gltf.scene;
+        scene.add(model);
 
-        // 自动适配相机
-        const box = new THREE.Box3().setFromObject(modelRef);
+        // 模型居中核心代码
+        const box = new THREE.Box3().setFromObject(model);
         const center = box.getCenter(new THREE.Vector3());
         const size = box.getSize(new THREE.Vector3());
-        const maxDim = Math.max(size.x, size.y, size.z);
-        const fov = camera.fov * (Math.PI / 180);
-        const cameraZ = Math.abs(maxDim / Math.sin(fov / 2));
+        const maxSize = Math.max(size.x, size.y, size.z);
+        const cameraDist = maxSize * 1.8;
+
         camera.position
           .copy(center)
-          .add(new THREE.Vector3(0, 0, cameraZ * 1.5));
-        controls.target.copy(center); // 让控制中心对准模型
+          .add(new THREE.Vector3(0, maxSize * 0.3, cameraDist));
+        controls.target.copy(center);
         controls.update();
       },
-      (xhr) => console.log(`📊 加载进度: ${(xhr.loaded / xhr.total) * 100}%`),
-      (error) => console.error("❌ 模型加载失败:", error),
+      (xhr) => {},
+      (err) => console.error("加载失败", err),
     );
 
-    // 动画循环
-    function animate() {
+    const animate = () => {
       requestAnimationFrame(animate);
-      controls.update(); // 必须更新控制器
+      controls.update();
       renderer.render(scene, camera);
-    }
+    };
     animate();
 
-    const handleResize = () => {
-      camera.aspect = window.innerWidth / window.innerHeight;
-      camera.updateProjectionMatrix();
-      renderer.setSize(window.innerWidth, window.innerHeight);
-    };
-    window.addEventListener("resize", handleResize);
-
     return () => {
-      window.removeEventListener("resize", handleResize);
+      window.removeEventListener("resize", resize);
       renderer.dispose();
       controls.dispose();
     };
   }, []);
 
   return (
-    <div className={styles.container}>
-      <Header />
-      <main className={styles.main}>
-        <canvas
-          ref={canvasRef}
-          style={{
-            width: "100%",
-            height: "100%",
-            display: "block",
-            backgroundColor: "#000",
-            // 删掉 position: fixed、top: 0、left: 0、zIndex: 1
-          }}
-        />
-      </main>
-    </div>
+    <canvas
+      ref={canvasRef}
+      style={{ width: "100%", height: "100%", display: "block" }}
+    />
   );
 };
-export default function WorkbenchPage() {
+
+export default function Page() {
   return (
-    <MainLayout>
+    <TripoLayout>
       <WorkbenchContent />
-    </MainLayout>
+    </TripoLayout>
   );
 }

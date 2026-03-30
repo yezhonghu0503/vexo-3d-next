@@ -1,30 +1,34 @@
 import React from "react";
+import styles from "./LeftPanel.module.css";
 
-const LeftPanel: React.FC = () => {
+const LeftPanel = () => {
   return (
-    <div className="w-64 bg-gray-800 border-r border-gray-700 p-4 flex flex-col">
-      <h3 className="text-lg font-semibold mb-4">生成模型</h3>
-      <div className="space-y-4">
-        <div className="flex flex-col">
-          <label className="text-sm text-gray-400 mb-1">模型类型</label>
-          <select className="bg-gray-700 border border-gray-600 rounded px-2 py-1 text-sm">
-            <option>建筑</option>
-            <option>道具</option>
-            <option>角色</option>
-          </select>
+    <div className={styles["left-panel"]}>
+      <h3 className={styles["title"]}>生成模型</h3>
+
+      <div className={styles["section"]}>
+        <label className={styles["label"]}>模型类型</label>
+        <div className={styles["tabs"]}>
+          <button className={styles["tab-active"]}>高精度模型</button>
+          <button className={styles["tab"]}>智能网格</button>
         </div>
-        <div className="flex flex-col">
-          <label className="text-sm text-gray-400 mb-1">风格</label>
-          <input
-            type="text"
-            placeholder="输入风格关键词"
-            className="bg-gray-700 border border-gray-600 rounded px-2 py-1 text-sm"
-          />
-        </div>
-        <button className="bg-purple-600 hover:bg-purple-700 rounded py-2 text-sm font-medium">
-          生成
-        </button>
       </div>
+
+      <div className={styles["section"]}>
+        <label className={styles["label"]}>几何精度</label>
+        <div className={styles["radio-group"]}>
+          <label className={styles["radio"]}>
+            <input type="radio" name="precision" defaultChecked />
+            标准
+          </label>
+          <label className={styles["radio"]}>
+            <input type="radio" name="precision" />
+            超清
+          </label>
+        </div>
+      </div>
+
+      <button className={styles["generate-btn"]}>生成模型</button>
     </div>
   );
 };

@@ -1,26 +1,19 @@
 import React from "react";
+import styles from "./BottonjustBar.module.css";
 
-const BottonjustBar: React.FC = () => {
+const BottonjustBar = () => {
   return (
-    <div className="bg-gray-800 border-t border-gray-700 p-3 flex items-center justify-between">
-      <div className="flex space-x-4">
-        <button className="bg-gray-700 hover:bg-gray-600 rounded px-3 py-1 text-sm">
-          旋转
-        </button>
-        <button className="bg-gray-700 hover:bg-gray-600 rounded px-3 py-1 text-sm">
-          缩放
-        </button>
-        <button className="bg-gray-700 hover:bg-gray-600 rounded px-3 py-1 text-sm">
-          平移
-        </button>
+    <div className={styles["bottom-bar"]}>
+      <div className={styles["left-actions"]}>
+        <button className={styles["btn"]}>撤销</button>
+        <button className={styles["btn"]}>重做</button>
       </div>
-      <div className="flex space-x-4">
-        <button className="bg-gray-700 hover:bg-gray-600 rounded px-3 py-1 text-sm">
-          保存
-        </button>
-        <button className="bg-gray-700 hover:bg-gray-600 rounded px-3 py-1 text-sm">
-          导出
-        </button>
+      <div className={styles["center-actions"]}>
+        <button className={styles["btn"]}>视图</button>
+        <button className={styles["btn"]}>3D打印</button>
+      </div>
+      <div className={styles["right-actions"]}>
+        <button className={styles["btn-primary"]}>导出</button>
       </div>
     </div>
   );
