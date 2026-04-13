@@ -3,41 +3,44 @@ import styles from "./TripoLayout.module.css";
 
 const TripoLayout = ({ children }: { children: React.ReactNode }) => {
   const [panelWidth, setPanelWidth] = useState(280);
-  const [bottomHeight, setBottomHeight] = useState(60);
+  const [bottomHeight, setBottomHeight] = useState(180);
 
   const isDraggingLeft = useRef(false);
   const isDraggingRight = useRef(false);
   const isDraggingBottom = useRef(false);
   const startY = useRef(0);
+  const startX = useRef(0);
   const startSize = useRef(0);
 
-  // 左侧拖拽
+  // 左侧拖拽（改宽度，用 clientX）
   const handleLeftMouseDown = (e: React.MouseEvent) => {
+    e.preventDefault();
     isDraggingLeft.current = true;
-    startY.current = e.clientY;
+    startX.current = e.clientX;
     startSize.current = panelWidth;
     document.addEventListener("mousemove", handleLeftMouseMove);
     document.addEventListener("mouseup", handleMouseUp);
   };
   const handleLeftMouseMove = (e: MouseEvent) => {
     if (!isDraggingLeft.current) return;
-    const deltaY = e.clientY - startY.current;
-    const newWidth = Math.max(200, Math.min(400, startSize.current + deltaY));
+    const deltaX = e.clientX - startX.current;
+    const newWidth = Math.max(200, Math.min(400, startSize.current + deltaX));
     setPanelWidth(newWidth);
   };
 
-  // 右侧拖拽
+  // 右侧拖拽（左侧把手：向左拖加宽）
   const handleRightMouseDown = (e: React.MouseEvent) => {
+    e.preventDefault();
     isDraggingRight.current = true;
-    startY.current = e.clientY;
+    startX.current = e.clientX;
     startSize.current = panelWidth;
     document.addEventListener("mousemove", handleRightMouseMove);
     document.addEventListener("mouseup", handleMouseUp);
   };
   const handleRightMouseMove = (e: MouseEvent) => {
     if (!isDraggingRight.current) return;
-    const deltaY = e.clientY - startY.current;
-    const newWidth = Math.max(200, Math.min(400, startSize.current + deltaY));
+    const deltaX = e.clientX - startX.current;
+    const newWidth = Math.max(200, Math.min(400, startSize.current - deltaX));
     setPanelWidth(newWidth);
   };
 
@@ -52,7 +55,7 @@ const TripoLayout = ({ children }: { children: React.ReactNode }) => {
   const handleBottomMouseMove = (e: MouseEvent) => {
     if (!isDraggingBottom.current) return;
     const deltaY = e.clientY - startY.current;
-    const newHeight = Math.max(40, Math.min(100, startSize.current + deltaY));
+    const newHeight = Math.max(120, Math.min(320, startSize.current + deltaY));
     setBottomHeight(newHeight);
   };
 
@@ -99,9 +102,10 @@ const TripoLayout = ({ children }: { children: React.ReactNode }) => {
         </div>
       </header>
 
-      {/* 主体内容：左 + 中 + 右 */}
+      {/* 主体：画布全屏铺底，左右与底部栏绝对定位悬浮在上层 */}
       <div className={styles.bodyContent}>
-        {/* 左侧栏 */}
+        <main className={styles.canvas}>{children}</main>
+
         <aside
           className={styles.sidebarLeft}
           style={{ width: `${panelWidth}px` }}
@@ -110,17 +114,24 @@ const TripoLayout = ({ children }: { children: React.ReactNode }) => {
           <div
             className={styles.resizeHandle}
             onMouseDown={handleLeftMouseDown}
-            style={{ right: -3, top: 0, bottom: 0, cursor: "ew-resize" }}
           />
         </aside>
 
-        {/* 中间：画布 + 底部 */}
-        <div className={styles.middle}>
-          <main className={styles.canvas}>{children}</main>
-          <footer
-            className={styles.bottomBar}
-            style={{ height: `${bottomHeight}px` }}
-          >
+        <aside
+          className={styles.sidebarRight}
+          style={{ width: `${panelWidth}px` }}
+        >
+          <div>右侧面板</div>
+          <div
+            className={styles.resizeHandle}
+            onMouseDown={handleRightMouseDown}
+          />
+        </aside>
+
+        <footer
+          className={styles.bottomBar}
+          style={{ minHeight: `${bottomHeight}px` }}
+        >
             {/* 上半部分：材质/画笔选择栏 */}
             <div className={styles.brushBar}>
               <div className={`${styles.brushItem} ${styles.brushWhite}`}></div>
@@ -281,25 +292,10 @@ const TripoLayout = ({ children }: { children: React.ReactNode }) => {
 
             {/* 拖拽把手（保留你原有的逻辑） */}
             <div
-              className={styles.resizeHandle}
+              className={styles.resizeHandleBottom}
               onMouseDown={handleBottomMouseDown}
-              style={{ top: -3, left: 0, right: 0, cursor: "ns-resize" }}
             />
-          </footer>
-        </div>
-
-        {/* 右侧栏 */}
-        <aside
-          className={styles.sidebarRight}
-          style={{ width: `${panelWidth}px` }}
-        >
-          <div>右侧面板</div>
-          <div
-            className={styles.resizeHandle}
-            onMouseDown={handleRightMouseDown}
-            style={{ left: -3, top: 0, bottom: 0, cursor: "ew-resize" }}
-          />
-        </aside>
+        </footer>
       </div>
     </div>
   );

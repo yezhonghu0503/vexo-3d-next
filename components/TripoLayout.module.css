@@ -18,6 +18,7 @@
   justify-content: space-between;
   padding: 0 20px;
   flex-shrink: 0;
+  z-index: 50;
 }
 
 .navLeft {
@@ -93,164 +94,123 @@
   font-weight: bold;
 }
 
-/* 主体内容区域 */
+/* 工作台视口：子元素画布绝对铺满，UI 叠在上层 */
 .bodyContent {
+  position: relative;
   flex: 1;
-  display: flex;
   min-height: 0;
+  overflow: hidden;
 }
 
-/* 左侧栏 */
-.sidebarLeft {
-  position: relative;
-  background: #2d2d2d;
-  border-right: 1px solid #444;
-  padding: 16px;
-  height: 100%;
+/* 3D 画布层：最底层，不参与 flex 分栏 */
+.canvas {
+  position: absolute;
+  inset: 0;
+  z-index: 0;
+  background: #1a1a1a;
 }
 
-/* 右侧栏 */
+/* 左右侧栏：脱离文档流，与窗口边留出间距，圆角 + 阴影 = 悬浮感 */
+.sidebarLeft,
 .sidebarRight {
-  position: relative;
-  background: #252525;
-  border-left: 1px solid #444;
+  position: absolute;
+  top: 16px;
+  bottom: 16px;
+  z-index: 20;
   padding: 16px;
-  height: 100%;
+  box-sizing: border-box;
+  border-radius: 12px;
+  background: rgba(45, 45, 45, 0.92);
+  backdrop-filter: blur(10px);
+  border: 1px solid rgba(255, 255, 255, 0.08);
+  box-shadow: 0 12px 40px rgba(0, 0, 0, 0.45);
+  overflow: auto;
 }
 
-/* 中间区域 */
-.middle {
-  flex: 1;
+.sidebarLeft {
+  left: 16px;
+}
+
+.sidebarRight {
+  right: 16px;
+}
+
+/* 底部工具栏：居中、离底边有间距，四角圆角 */
+.bottomBar {
+  position: absolute;
+  left: 50%;
+  bottom: 16px;
+  transform: translateX(-50%);
+  width: min(92%, 920px);
+  z-index: 20;
+  box-sizing: border-box;
+  padding: 16px 20px;
   display: flex;
   flex-direction: column;
-  min-height: 0;
-}
-
-.canvas {
-  flex: 1;
-  background: #1a1a1a;
-  min-height: 0;
-}
-
-/* 底部栏 */
-.bottomBar {
-  position: relative;
-  background: #2b2b2b;
-  border-top: 1px solid #444;
-  display: flex;
-  align-items: center;
-  justify-content: space-between;
-  padding: 0 20px;
-  flex-shrink: 0;
-}
-
-.bottomLeft {
-  display: flex;
-  gap: 10px;
-}
-
-.footerBtn {
-  background: #333;
-  border: none;
-  color: #fff;
-  padding: 6px 10px;
-  border-radius: 6px;
-  cursor: pointer;
-}
-
-.bottomCenter {
-  display: flex;
-  align-items: center;
-  gap: 10px;
-}
-
-.viewDot {
-  width: 8px;
-  height: 8px;
-  border-radius: 50%;
-  background: #666;
-}
-
-.viewDotActive {
-  width: 8px;
-  height: 8px;
-  border-radius: 50%;
-  background: #fff;
-}
-
-.viewIcon {
-  font-size: 14px;
-}
-
-.bottomRight {
-  display: flex;
-  gap: 10px;
-}
-
-.exportBtn {
-  background: #6366f1;
-  border: none;
-  color: #fff;
-  padding: 6px 14px;
-  border-radius: 6px;
-  cursor: pointer;
+  gap: 12px;
+  background: rgba(37, 37, 37, 0.94);
+  backdrop-filter: blur(12px);
+  border: 1px solid rgba(255, 255, 255, 0.08);
+  border-radius: 16px;
+  box-shadow: 0 12px 40px rgba(0, 0, 0, 0.5);
 }
 
 /* 拖拽条 */
 .resizeHandle {
   position: absolute;
   background: transparent;
-  z-index: 10;
+  z-index: 30;
 }
 
 .resizeHandle:hover {
-  background: #6366f1;
-  width: 3px;
+  background: rgba(99, 102, 241, 0.35);
 }
 
-
-/* 中间区域（父容器，确保底部栏只在中间显示） */
-.middle {
-  flex: 1;
-  display: flex;
-  flex-direction: column;
-  position: relative;
-  overflow: hidden;
-  background: #000;
+/* 左侧栏右侧把手 */
+.sidebarLeft .resizeHandle {
+  width: 6px;
+  right: -3px;
+  top: 8px;
+  bottom: 8px;
+  border-radius: 4px;
+  cursor: ew-resize;
 }
 
-/* 底部栏容器：上移 + 宽度缩小 */
-.bottomBar {
+/* 右侧栏左侧把手 */
+.sidebarRight .resizeHandle {
+  width: 6px;
+  left: -3px;
+  top: 8px;
+  bottom: 8px;
+  border-radius: 4px;
+  cursor: ew-resize;
+}
+
+/* 底部栏上沿把手 */
+.resizeHandleBottom {
   position: absolute;
-  bottom: 1px;
-  /* 上移20px，不再贴底，留出空间 */
-  left: 50%;
-  transform: translateX(-50%);
-  /* 水平居中 */
-  width: 80%;
-  /* 宽度缩小为中间区域的80%，可自行调整（如70%/85%） */
-  max-width: 900px;
-  /* 最大宽度限制，避免大屏过宽 */
-  min-height: 180px;
-
-  background: #252525;
-  border-radius: 20px 20px 0 0;
-  display: flex;
-  flex-direction: column;
-  gap: 12px;
-  padding: 16px 20px;
-  box-sizing: border-box;
-  z-index: 10;
+  top: -3px;
+  left: 12px;
+  right: 12px;
+  height: 6px;
+  border-radius: 4px;
+  cursor: ns-resize;
+  z-index: 30;
+  background: transparent;
 }
 
-/* 上半部分：材质/画笔选择栏（保持不变） */
+.resizeHandleBottom:hover {
+  background: rgba(99, 102, 241, 0.35);
+}
+
+/* 材质/画笔选择栏 */
 .brushBar {
   display: flex;
   align-items: center;
   justify-content: center;
   gap: 20px;
   padding: 8px 16px;
-  background: #333333;
+  background: rgba(51, 51, 51, 0.95);
   border-radius: 30px;
   overflow-x: auto;
   scrollbar-width: none;
@@ -260,7 +220,6 @@
   display: none;
 }
 
-/* 材质球通用样式（保持不变） */
 .brushItem {
   width: 36px;
   height: 36px;
@@ -274,12 +233,11 @@
   justify-content: center;
 }
 
-.brushItem.active {
+.active {
   border-color: #ffffff;
   transform: scale(1.1);
 }
 
-/* 材质球颜色（保持不变） */
 .brushWhite {
   background: #ffffff;
 }
@@ -313,7 +271,7 @@
   border: none;
 }
 
-/* 下半部分：功能按钮栏（保持不变） */
+/* 功能按钮栏 */
 .actionBar {
   display: flex;
   align-items: center;
@@ -326,6 +284,7 @@
   align-items: center;
   gap: 16px;
   flex: 1;
+  flex-wrap: wrap;
 }
 
 .actionBtn {
@@ -365,7 +324,7 @@
 }
 
 .exportBtn {
-  background: #6C63FF;
+  background: #6c63ff;
   color: #fff;
   border: none;
   border-radius: 12px;
@@ -376,15 +335,5 @@
   display: flex;
   align-items: center;
   gap: 6px;
-}
-
-/* 拖拽把手：适配上移后的底部栏 */
-.resizeHandle {
-  position: absolute;
-  top: -3px;
-  left: 0;
-  right: 0;
-  height: 6px;
-  cursor: ns-resize;
-  z-index: 11;
+  flex-shrink: 0;
 }
