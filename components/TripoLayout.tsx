@@ -5,6 +5,13 @@ import Image from "next/image";
 // antd 核心组件
 import { Popover, Modal } from "antd";
 
+import {
+  UserOutlined,
+  ApiOutlined,
+  AppstoreAddOutlined,
+  MessageOutlined,
+  LogoutOutlined,
+} from "@ant-design/icons";
 const TripoLayout = ({ children }: { children: React.ReactNode }) => {
   const [panelWidth, setPanelWidth] = useState(280);
   const [bottomHeight, setBottomHeight] = useState(180);
@@ -82,6 +89,81 @@ const TripoLayout = ({ children }: { children: React.ReactNode }) => {
       document.removeEventListener("mouseup", handleMouseUp);
     };
   }, []);
+  {
+    /* 鼠标移入弹出气泡菜单（Popover实现） */
+  }
+  const content = (
+    <div
+      style={{
+        display: "flex",
+        flexDirection: "column",
+        gap: "8px",
+        backgroundColor: "#26292C",
+      }}
+    >
+      <div
+        style={{
+          display: "flex",
+          alignItems: "center",
+          gap: "6px",
+          cursor: "pointer",
+          color: "#F2F2F2",
+        }}
+        onClick={() => setOpen(true)}
+      >
+        <UserOutlined />
+        <span>个人信息</span>
+      </div>
+      <div
+        style={{
+          display: "flex",
+          alignItems: "center",
+          gap: "6px",
+          cursor: "pointer",
+          color: "#F2F2F2",
+        }}
+      >
+        <ApiOutlined />
+        <span>API</span>
+      </div>
+      <div
+        style={{
+          display: "flex",
+          alignItems: "center",
+          gap: "6px",
+          cursor: "pointer",
+          color: "#F2F2F2",
+        }}
+      >
+        <AppstoreAddOutlined />
+        <span>插件</span>
+      </div>
+      <div
+        style={{
+          display: "flex",
+          alignItems: "center",
+          gap: "6px",
+          cursor: "pointer",
+          color: "#F2F2F2",
+        }}
+      >
+        <MessageOutlined />
+        <span>联系我们</span>
+      </div>
+      <div
+        style={{
+          display: "flex",
+          alignItems: "center",
+          gap: "6px",
+          cursor: "pointer",
+          color: "#F2F2F2",
+        }}
+      >
+        <LogoutOutlined />
+        <span>登出</span>
+      </div>
+    </div>
+  );
 
   return (
     <div className={styles.layoutWrapper}>
@@ -108,13 +190,12 @@ const TripoLayout = ({ children }: { children: React.ReactNode }) => {
             <Image src="/image/ld.png" alt="avatar" width={22} height={22} />
             <Image src="/image/dq.png" alt="avatar" width={22} height={22} />
             {/* 鼠标移入弹出气泡 */}
-            <Popover content="个人信息" trigger="hover">
+            <Popover content={content} trigger="hover" placement="bottomRight">
               <Image
                 src="/image/grxx.png"
                 width={22}
                 height={22}
                 style={{ cursor: "pointer", borderRadius: 8 }}
-                onClick={() => setOpen(true)}
                 alt="个人中心"
               />
             </Popover>
@@ -122,14 +203,52 @@ const TripoLayout = ({ children }: { children: React.ReactNode }) => {
             <Modal
               open={open}
               onCancel={() => setOpen(false)}
-              title="个人信息"
-              width={500}
+              title="用户头像"
+              width={1000}
+              footer={null}
+              className={styles.userModal}
+              bodyStyle={{
+                height: "600px",
+                overflow: "auto",
+                backgroundColor: "#101115",
+              }}
             >
-              <div>用户名：</div>
-              <input style={{ padding: 8, width: "100%", marginTop: 4 }} />
+              <div className={styles.modalBody}>
+                {/* 圆形头像 */}
+                <div className={styles.avatarCircle}>
+                  <UserOutlined style={{ fontSize: 48, color: "#fff" }} />
+                </div>
 
-              <div style={{ marginTop: 16 }}>邮箱：</div>
-              <input style={{ padding: 8, width: "100%", marginTop: 4 }} />
+                {/* 用户名 */}
+                <div className={styles.formGroup}>
+                  <label className={styles.formLabel}>用户头像</label>
+                  <div className={styles.inputWrapper}>
+                    <input
+                      defaultValue="请输入用户名"
+                      className={styles.formInput}
+                    />
+                    <span className={styles.editIcon}>✎</span>
+                  </div>
+                </div>
+
+                {/* 邮箱 */}
+                <div className={styles.formGroup}>
+                  <label className={styles.formLabel}>邮箱</label>
+                  <input
+                    defaultValue="请输入邮箱"
+                    className={styles.formInput}
+                  />
+                </div>
+
+                {/* 按钮 */}
+                <div className={styles.buttonGroup}>
+                  <button className={styles.btnCancel}>取消</button>
+                  <button className={styles.btnSave}>保存更改</button>
+                </div>
+
+                {/* 重置密码 */}
+                <div className={styles.resetPasswordLink}>设置/重置密码</div>
+              </div>
             </Modal>
           </div>
         </div>
