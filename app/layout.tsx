@@ -1,5 +1,6 @@
 import type { Metadata } from 'next'
 import './globals.css'
+import { AntdProvider } from '@/components/AntdProvider'
 
 export const metadata: Metadata = {
   title: 'AI 3D Model Generator',
@@ -13,7 +14,9 @@ export default function RootLayout({
 }) {
   return (
     <html lang="en" suppressHydrationWarning>
-      <body suppressHydrationWarning>{children}</body>
+      <body suppressHydrationWarning>
+        <AntdProvider>{children}</AntdProvider>
+      </body>
     </html>
   )
 }
