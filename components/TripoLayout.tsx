@@ -22,6 +22,9 @@ const TripoLayout = ({ children }: { children: React.ReactNode }) => {
   const startX = useRef(0);
   const startSize = useRef(0);
   const [open, setOpen] = useState(false);
+  const [activeTab, setActiveTab] = useState<"image" | "model" | "animation">(
+    "image",
+  );
 
   // 左侧拖拽（改宽度，用 clientX）
   const handleLeftMouseDown = (e: React.MouseEvent) => {
@@ -258,15 +261,222 @@ const TripoLayout = ({ children }: { children: React.ReactNode }) => {
       <div className={styles.bodyContent}>
         <main className={styles.canvas}>{children}</main>
 
-        <aside
-          className={styles.sidebarLeft}
-          style={{ width: `${panelWidth}px` }}
-        >
-          <div>左侧面板</div>
-          <div
-            className={styles.resizeHandle}
-            onMouseDown={handleLeftMouseDown}
-          />
+        {/* 最外层大aside 包裹整个侧边栏 */}
+        <aside className={styles.sidebarWrapper}>
+          {/* 1. 左侧竖向导航栏 */}
+          <div className={styles.navColumn}>
+            <div
+              className={`${styles.navItem} ${activeTab === "image" ? styles.navItemActive : ""}`}
+              onClick={() => setActiveTab("image")}
+            >
+              <span className={styles.navIcon}>🖼️</span>
+              <span className={styles.navText}>图像</span>
+            </div>
+            <div
+              className={`${styles.navItem} ${activeTab === "model" ? styles.navItemActive : ""}`}
+              onClick={() => setActiveTab("model")}
+            >
+              <span className={styles.navIcon}>🧊</span>
+              <span className={styles.navText}>模型</span>
+            </div>
+            <div
+              className={`${styles.navItem} ${activeTab === "animation" ? styles.navItemActive : ""}`}
+              onClick={() => setActiveTab("animation")}
+            >
+              <span className={styles.navIcon}>🏃</span>
+              <span className={styles.navText}>动画</span>
+            </div>
+          </div>
+          {/* 2. 右侧常驻详情面板 */}
+          <div className={styles.contentPanel}>
+            {/* ========== 图像面板 完整复刻 ========== */}
+            {activeTab === "image" && (
+              <div className={styles.panelContainer}>
+                <div className={styles.panelBlock}>
+                  <p className={styles.panelTitle}>人工智能模型</p>
+                  <div className={styles.modelDropdown}>
+                    <div className={styles.modelLogo}>🍌2</div>
+                    <span>Nano Banana 2</span>
+                    <span className={styles.dropdownArrow}>⌄</span>
+                  </div>
+                </div>
+                <div className={styles.panelBlock}>
+                  <p className={styles.panelTitle}>提示</p>
+                  <textarea
+                    className={styles.textareaPrompt}
+                    placeholder="描述您想生成的图像。您可以使用您的母语，例如，一只可爱的小狗"
+                    maxLength={800}
+                  />
+                  <div className={styles.charCount}>0/800</div>
+                </div>
+                <div className={styles.panelBlock}>
+                  <p className={styles.panelTitle}>纵横比</p>
+                  <div className={styles.buttonRow}>
+                    <button className={`${styles.tagBtn} ${styles.tagActive}`}>
+                      1:1
+                    </button>
+                    <button className={styles.tagBtn}>16:9</button>
+                    <button className={styles.tagBtn}>9:16</button>
+                    <button className={styles.tagBtn}>4:3</button>
+                    <button className={styles.tagBtn}>3:4</button>
+                  </div>
+                </div>
+                <div className={styles.panelBlock}>
+                  <p className={styles.panelTitle}>图像数量</p>
+                  <div className={styles.buttonRow}>
+                    <button className={styles.tagBtn}>1</button>
+                    <button className={styles.tagBtn}>2</button>
+                    <button className={styles.tagBtn}>3</button>
+                    <button className={`${styles.tagBtn} ${styles.tagActive}`}>
+                      4
+                    </button>
+                    <button className={styles.tagBtn}>⌄</button>
+                  </div>
+                </div>
+                <div className={styles.panelBlock}>
+                  <p className={styles.panelTitle}>风格化</p>
+                  <div className={styles.styleSelect}>
+                    <span>🚫 无</span>
+                    <span className={styles.settingIcon}>⛭</span>
+                  </div>
+                </div>
+                <div className={styles.switchItem}>
+                  <span>多视图</span>
+                  <input type="checkbox" className={styles.toggleSwitch} />
+                </div>
+                <div className={styles.panelBlock}>
+                  <p className={styles.panelTitle}>姿势</p>
+                  <div className={styles.buttonRow}>
+                    <button className={`${styles.tagBtn} ${styles.tagActive}`}>
+                      无
+                    </button>
+                    <button className={styles.tagBtn}>A 姿势</button>
+                    <button className={styles.tagBtn}>T 姿势</button>
+                  </div>
+                </div>
+                <div className={styles.bottomMeta}>
+                  <span>15秒</span>
+                  <span>💰 6 × 4 = 24</span>
+                </div>
+                <button className={styles.generateBtn}>✨ 生成</button>
+              </div>
+            )}
+            {/* ========== 模型面板 完整复刻 ========== */}
+            {activeTab === "model" && (
+              <div className={styles.panelContainer}>
+                <p className={styles.panelTitle}>图像</p>
+                <div className={styles.uploadBox}>
+                  <div className={styles.uploadIcon}>⬆️</div>
+                  <p>点击/拖放/粘贴图像</p>
+                  <p className={styles.uploadTip}>
+                    支持的格式：.png,.jpg,.jpeg,.webp <br />
+                    最大大小：20MB
+                  </p>
+                </div>
+                <div className={styles.panelBlock}>
+                  <p className={styles.panelTitle}>名称 ⓘ</p>
+                  <input
+                    className={styles.normalInput}
+                    placeholder="为你的生成命名"
+                  />
+                </div>
+                <div className={styles.panelBlock}>
+                  <p className={styles.panelTitle}>模式类型 ⓘ</p>
+                  <div className={styles.buttonRow}>
+                    <button className={`${styles.tagBtn} ${styles.tagActive}`}>
+                      标准
+                    </button>
+                    <button className={styles.tagBtn}>低模 (Beta)</button>
+                  </div>
+                </div>
+                <div className={styles.panelBlock}>
+                  <p className={styles.panelTitle}>人工智能模型</p>
+                  <div className={styles.modelDropdown}>Meshy 6 ⌄</div>
+                </div>
+                <div className={styles.switchItem}>
+                  <span>图像增强 ⓘ</span>
+                  <input
+                    type="checkbox"
+                    checked
+                    className={styles.toggleSwitch}
+                  />
+                </div>
+                <div className={styles.switchItem}>
+                  <span>多视图 (Beta) 👑</span>
+                  <input type="checkbox" className={styles.toggleSwitch} />
+                </div>
+                <div className={styles.bottomMeta}>
+                  <span>1分钟</span>
+                  <span>💰 20</span>
+                </div>
+                <button className={styles.generateBtn}>✨ 生成</button>
+              </div>
+            )}
+            {/* ========== 动画面板 完整复刻 ========== */}
+            {activeTab === "animation" && (
+              <div className={styles.panelContainer}>
+                <input
+                  className={styles.searchInput}
+                  placeholder="🔍 搜索动画"
+                />
+                <p className={styles.sectionTitle}>📶 库</p>
+                <div className={styles.animTopBar}>
+                  <span className={styles.boldText}>💡 骨骼绑定模型</span>
+                  <button className={styles.boneBtn}>⛓️ 绑定骨骼</button>
+                </div>
+                <div className={styles.animGrid}>
+                  <div className={styles.animCard}>
+                    <div className={styles.animPreview}>⚔️</div>
+                    <p>三连击</p>
+                  </div>
+                  <div className={styles.animCard}>
+                    <div className={styles.animPreview}>🤝</div>
+                    <p>同意手势</p>
+                  </div>
+                  <div className={styles.animCard}>
+                    <div className={styles.animPreview}>🚶‍♀️</div>
+                    <p>女性步行</p>
+                  </div>
+                  <div className={styles.animCard}>
+                    <div className={styles.animPreview}>💃</div>
+                    <p>尽情舞蹈</p>
+                  </div>
+                  <div className={styles.animCard}>
+                    <div className={styles.animPreview}>🏃</div>
+                    <p>快跑</p>
+                  </div>
+                  <div className={styles.animCard}>
+                    <div className={styles.animPreview}>🦸</div>
+                    <p>技能 1</p>
+                  </div>
+                  <div className={styles.animCard}>
+                    <div className={styles.animPreview}>🤸</div>
+                    <p>技能 3</p>
+                  </div>
+                  <div className={styles.animCard}>
+                    <div className={styles.animPreview}>🥊</div>
+                    <p>拳击练习</p>
+                  </div>
+                  <div className={styles.animCard}>
+                    <div className={styles.animPreview}>👊</div>
+                    <p>攻击</p>
+                  </div>
+                  <div className={styles.animCard}>
+                    <div className={styles.animPreview}>🚶</div>
+                    <p>步行</p>
+                  </div>
+                  <div className={styles.animCard}>
+                    <div className={styles.animPreview}>💀</div>
+                    <p>死亡</p>
+                  </div>
+                  <div className={styles.animCard}>
+                    <div className={styles.animPreview}>🧍</div>
+                    <p>空闲</p>
+                  </div>
+                </div>
+              </div>
+            )}
+          </div>
         </aside>
 
         <aside
