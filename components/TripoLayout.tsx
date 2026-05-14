@@ -26,7 +26,65 @@ const TripoLayout = ({ children }: { children: React.ReactNode }) => {
     "image",
   );
 
-  // 左侧拖拽（改宽度，用 clientX）
+  const [imageForm, setImageForm] = useState({
+    model: "gpt_image_2", // 默认选中GPT Image 2
+    prompt: "",
+    aspectRatio: "1:1",
+    imageCount: 4,
+    style: "none",
+    pose: "无",
+    multiView: false,
+  });
+
+  const [modalForm, setModalForm] = useState({
+    name: "",
+    modeType: "标准",
+    aiModel: "Meshy 6",
+    imageEnhance: true,
+    multiView: false,
+  });
+
+  const [actionForm, setActionForm] = useState({
+    search: "",
+    selectAnim: "",
+  });
+
+  const [modelDropdownOpen, setModelDropdownOpen] = useState(false);
+
+  // 完整模型列表（和截图完全一致）
+  const modelList = [
+    {
+      value: "gpt_image_2",
+      label: "GPT Image 2",
+      icon: "🔵",
+      isPro: false,
+    },
+    {
+      value: "nano_banana_pro",
+      label: "Nano Banana Pro",
+      icon: "🟡",
+      isPro: true,
+    },
+    {
+      value: "nano_banana_2",
+      label: "Nano Banana 2",
+      icon: "🟠",
+      isPro: false,
+    },
+    {
+      value: "nano_banana",
+      label: "Nano Banana",
+      icon: "🟣",
+      isPro: false,
+    },
+  ];
+
+  // 其他选项列表
+  const ratioList = ["1:1", "16:9", "9:16", "4:3", "3:4"];
+  const countList = [1, 2, 3, 4];
+  const poseList = ["无", "A 姿势", "T 姿势"];
+  const styleList = ["无", "写实", "动漫", "科幻"];
+  const [styleShow, setStyleShow] = useState(false); // 左侧拖拽（改宽度，用 clientX）
   const handleLeftMouseDown = (e: React.MouseEvent) => {
     e.preventDefault();
     isDraggingLeft.current = true;
@@ -261,7 +319,6 @@ const TripoLayout = ({ children }: { children: React.ReactNode }) => {
       <div className={styles.bodyContent}>
         <main className={styles.canvas}>{children}</main>
 
-        {/* 最外层大aside 包裹整个侧边栏 */}
         <aside className={styles.sidebarWrapper}>
           {/* 1. 左侧竖向导航栏 */}
           <div className={styles.navColumn}>
@@ -294,11 +351,153 @@ const TripoLayout = ({ children }: { children: React.ReactNode }) => {
               <div className={styles.panelContainer}>
                 <div className={styles.panelBlock}>
                   <p className={styles.panelTitle}>人工智能模型</p>
-                  <div className={styles.modelDropdown}>
-                    <div className={styles.modelLogo}>🍌2</div>
-                    <span>Nano Banana 2</span>
-                    <span className={styles.dropdownArrow}>⌄</span>
+
+                  {/* 下拉顶部收起按钮 */}
+                  <div
+                    className={styles.modelDropdown}
+                    onClick={() => setModelDropdownOpen(!modelDropdownOpen)}
+                    style={{
+                      display: "flex",
+                      alignItems: "center",
+                      gap: "12px",
+                      padding: "10px 14px",
+                      borderRadius: "12px",
+                      background: "#222",
+                      cursor: "pointer",
+                    }}
+                  >
+                    {/* 当前选中模型图标+名称 */}
+                    <div
+                      style={{
+                        width: "30px",
+                        height: "30px",
+                        borderRadius: "8px",
+                        background: "linear-gradient(135deg,#4facfe,#00f2fe)",
+                        display: "flex",
+                        alignItems: "center",
+                        justifyContent: "center",
+                        fontSize: "16px",
+                      }}
+                    >
+                      {modelList.find((m) => m.value === imageForm.model)?.icon}
+                    </div>
+                    <span style={{ fontSize: "16px", color: "#fff", flex: 1 }}>
+                      {
+                        modelList.find((m) => m.value === imageForm.model)
+                          ?.label
+                      }
+                    </span>
+                    {/* 上下展开箭头 */}
+                    <span
+                      style={{
+                        fontSize: "18px",
+                        color: "#aaa",
+                        // 核心：让箭头在span内垂直居中
+                        display: "flex",
+                        alignItems: "center",
+                        justifyContent: "center",
+                        // 移除错误的 marginRight: "100px,"（这个样式会把箭头推偏）
+                        // 如果需要和右侧保持间距，可以加 marginLeft: "auto" 让箭头靠右居中
+                        marginLeft: "auto",
+                        marginRight: "18px", // 微调右侧边距
+                      }}
+                    >
+                      {modelDropdownOpen ? "⌃" : "⌄"}
+                    </span>
                   </div>
+
+                  {/* 下拉展开选项列表 和截图1:1 */}
+                  {modelDropdownOpen && (
+                    <div
+                      style={{
+                        position: "absolute", // 核心：绝对定位，脱离文档流
+                        top: "100%", // 紧贴父容器底部
+                        left: 0,
+                        right: 0,
+                        marginTop: "4px", // 与顶部栏的间距
+                        background: "#2a2a2a",
+                        borderRadius: "12px",
+                        overflow: "hidden",
+                        border: "1px solid #333",
+                        zIndex: 999, // 极高层级，确保覆盖所有下方元素
+                        boxShadow: "0 4px 12px rgba(0,0,0,0.3)", // 加阴影更有悬浮感（可选）
+                      }}
+                    >
+                      {modelList.map((item) => (
+                        <div
+                          key={item.value}
+                          onClick={() => {
+                            setImageForm((prev) => ({
+                              ...prev,
+                              model: item.value,
+                            }));
+                            setModelDropdownOpen(false);
+                          }}
+                          style={{
+                            display: "flex",
+                            alignItems: "center",
+                            gap: "12px",
+                            padding: "10px 14px",
+                            cursor: "pointer",
+                            background:
+                              imageForm.model === item.value
+                                ? "#2b2b2b"
+                                : "transparent",
+                          }}
+                        >
+                          {/* 模型图标 */}
+                          <div
+                            style={{
+                              width: "30px",
+                              height: "30px",
+                              borderRadius: "8px",
+                              background:
+                                item.value === "gpt_image_2"
+                                  ? "linear-gradient(135deg,#4facfe,#00f2fe)"
+                                  : item.value === "nano_banana_pro"
+                                    ? "#f7c948"
+                                    : item.value === "nano_banana_2"
+                                      ? "#ff9a3c"
+                                      : "#b565e7",
+                              display: "flex",
+                              alignItems: "center",
+                              justifyContent: "center",
+                              fontSize: "18px",
+                            }}
+                          >
+                            🍌
+                          </div>
+
+                          {/* 模型名称+PRO标 */}
+                          <div style={{ flex: 1 }}>
+                            <span style={{ color: "#fff", fontSize: "16px" }}>
+                              {item.label}
+                            </span>
+                            {item.isPro && (
+                              <span
+                                style={{
+                                  background: "#794cff",
+                                  fontSize: "12px",
+                                  padding: "2px 6px",
+                                  borderRadius: "4px",
+                                  marginLeft: "6px",
+                                }}
+                              >
+                                PRO
+                              </span>
+                            )}
+                          </div>
+
+                          {/* 选中后右侧白色对勾 ✅ */}
+                          {imageForm.model === item.value && (
+                            <span style={{ color: "#fff", fontSize: "18px" }}>
+                              ✓
+                            </span>
+                          )}
+                        </div>
+                      ))}
+                    </div>
+                  )}
                 </div>
                 <div className={styles.panelBlock}>
                   <p className={styles.panelTitle}>提示</p>
@@ -306,52 +505,108 @@ const TripoLayout = ({ children }: { children: React.ReactNode }) => {
                     className={styles.textareaPrompt}
                     placeholder="描述您想生成的图像。您可以使用您的母语，例如，一只可爱的小狗"
                     maxLength={800}
+                    value={imageForm.prompt}
+                    onChange={(e) =>
+                      setImageForm({ ...imageForm, prompt: e.target.value })
+                    }
                   />
-                  <div className={styles.charCount}>0/800</div>
+                  <div className={styles.charCount}>
+                    {imageForm.prompt.length}/800
+                  </div>
                 </div>
                 <div className={styles.panelBlock}>
                   <p className={styles.panelTitle}>纵横比</p>
                   <div className={styles.buttonRow}>
-                    <button className={`${styles.tagBtn} ${styles.tagActive}`}>
-                      1:1
-                    </button>
-                    <button className={styles.tagBtn}>16:9</button>
-                    <button className={styles.tagBtn}>9:16</button>
-                    <button className={styles.tagBtn}>4:3</button>
-                    <button className={styles.tagBtn}>3:4</button>
+                    {ratioList.map((item) => (
+                      <button
+                        key={item}
+                        className={`${styles.tagBtn} ${imageForm.aspectRatio === item ? styles.tagActive : ""}`}
+                        onClick={() =>
+                          setImageForm({ ...imageForm, aspectRatio: item })
+                        }
+                      >
+                        {item}
+                      </button>
+                    ))}
                   </div>
                 </div>
                 <div className={styles.panelBlock}>
                   <p className={styles.panelTitle}>图像数量</p>
                   <div className={styles.buttonRow}>
-                    <button className={styles.tagBtn}>1</button>
-                    <button className={styles.tagBtn}>2</button>
-                    <button className={styles.tagBtn}>3</button>
-                    <button className={`${styles.tagBtn} ${styles.tagActive}`}>
-                      4
-                    </button>
+                    {countList.map((item) => (
+                      <button
+                        key={item}
+                        className={`${styles.tagBtn} ${imageForm.imageCount === item ? styles.tagActive : ""}`}
+                        onClick={() =>
+                          setImageForm({ ...imageForm, imageCount: item })
+                        }
+                      >
+                        {item}
+                      </button>
+                    ))}
                     <button className={styles.tagBtn}>⌄</button>
                   </div>
                 </div>
                 <div className={styles.panelBlock}>
                   <p className={styles.panelTitle}>风格化</p>
-                  <div className={styles.styleSelect}>
-                    <span>🚫 无</span>
+                  <div
+                    className={styles.styleSelect}
+                    onClick={() => setStyleShow(!styleShow)}
+                  >
+                    <span>🚫 {imageForm.style}</span>
                     <span className={styles.settingIcon}>⛭</span>
                   </div>
+                  {styleShow && (
+                    <div
+                      style={{
+                        background: "#222",
+                        padding: 8,
+                        borderRadius: 6,
+                      }}
+                    >
+                      {styleList.map((item) => (
+                        <div
+                          key={item}
+                          style={{ padding: "6px 0", cursor: "pointer" }}
+                          onClick={() => {
+                            setImageForm({ ...imageForm, style: item });
+                            setStyleShow(false);
+                          }}
+                        >
+                          {item}
+                        </div>
+                      ))}
+                    </div>
+                  )}
                 </div>
                 <div className={styles.switchItem}>
                   <span>多视图</span>
-                  <input type="checkbox" className={styles.toggleSwitch} />
+                  <input
+                    type="checkbox"
+                    className={styles.toggleSwitch}
+                    checked={imageForm.multiView}
+                    onChange={(e) =>
+                      setImageForm({
+                        ...imageForm,
+                        multiView: e.target.checked,
+                      })
+                    }
+                  />
                 </div>
                 <div className={styles.panelBlock}>
                   <p className={styles.panelTitle}>姿势</p>
                   <div className={styles.buttonRow}>
-                    <button className={`${styles.tagBtn} ${styles.tagActive}`}>
-                      无
-                    </button>
-                    <button className={styles.tagBtn}>A 姿势</button>
-                    <button className={styles.tagBtn}>T 姿势</button>
+                    {poseList.map((item) => (
+                      <button
+                        key={item}
+                        className={`${styles.tagBtn} ${imageForm.pose === item ? styles.tagActive : ""}`}
+                        onClick={() =>
+                          setImageForm({ ...imageForm, pose: item })
+                        }
+                      >
+                        {item}
+                      </button>
+                    ))}
                   </div>
                 </div>
                 <div className={styles.bottomMeta}>
@@ -361,7 +616,7 @@ const TripoLayout = ({ children }: { children: React.ReactNode }) => {
                 <button className={styles.generateBtn}>✨ 生成</button>
               </div>
             )}
-            {/* ========== 模型面板 完整复刻 ========== */}
+            {/* ========== 模型面板 ========== */}
             {activeTab === "model" && (
               <div className={styles.panelContainer}>
                 <p className={styles.panelTitle}>图像</p>
@@ -378,32 +633,66 @@ const TripoLayout = ({ children }: { children: React.ReactNode }) => {
                   <input
                     className={styles.normalInput}
                     placeholder="为你的生成命名"
+                    value={modalForm.name}
+                    onChange={(e) =>
+                      setModalForm({ ...modalForm, name: e.target.value })
+                    }
                   />
                 </div>
                 <div className={styles.panelBlock}>
                   <p className={styles.panelTitle}>模式类型 ⓘ</p>
                   <div className={styles.buttonRow}>
-                    <button className={`${styles.tagBtn} ${styles.tagActive}`}>
+                    <button
+                      className={`${styles.tagBtn} ${modalForm.modeType === "标准" ? styles.tagActive : ""}`}
+                      onClick={() =>
+                        setModalForm({ ...modalForm, modeType: "标准" })
+                      }
+                    >
                       标准
                     </button>
-                    <button className={styles.tagBtn}>低模 (Beta)</button>
+                    <button
+                      className={styles.tagBtn}
+                      onClick={() =>
+                        setModalForm({ ...modalForm, modeType: "低模 (Beta)" })
+                      }
+                    >
+                      低模 (Beta)
+                    </button>
                   </div>
                 </div>
                 <div className={styles.panelBlock}>
                   <p className={styles.panelTitle}>人工智能模型</p>
-                  <div className={styles.modelDropdown}>Meshy 6 ⌄</div>
+                  <div className={styles.modelDropdown}>
+                    {modalForm.aiModel}
+                  </div>
                 </div>
                 <div className={styles.switchItem}>
                   <span>图像增强 ⓘ</span>
                   <input
                     type="checkbox"
-                    checked
+                    checked={modalForm.imageEnhance}
                     className={styles.toggleSwitch}
+                    onChange={(e) =>
+                      setModalForm({
+                        ...modalForm,
+                        imageEnhance: e.target.checked,
+                      })
+                    }
                   />
                 </div>
                 <div className={styles.switchItem}>
                   <span>多视图 (Beta) 👑</span>
-                  <input type="checkbox" className={styles.toggleSwitch} />
+                  <input
+                    type="checkbox"
+                    className={styles.toggleSwitch}
+                    checked={modalForm.multiView}
+                    onChange={(e) =>
+                      setModalForm({
+                        ...modalForm,
+                        multiView: e.target.checked,
+                      })
+                    }
+                  />
                 </div>
                 <div className={styles.bottomMeta}>
                   <span>1分钟</span>
@@ -412,12 +701,16 @@ const TripoLayout = ({ children }: { children: React.ReactNode }) => {
                 <button className={styles.generateBtn}>✨ 生成</button>
               </div>
             )}
-            {/* ========== 动画面板 完整复刻 ========== */}
+            {/* ========== 动画面板 ========== */}
             {activeTab === "animation" && (
               <div className={styles.panelContainer}>
                 <input
                   className={styles.searchInput}
                   placeholder="🔍 搜索动画"
+                  value={actionForm.search}
+                  onChange={(e) =>
+                    setActionForm({ ...actionForm, search: e.target.value })
+                  }
                 />
                 <p className={styles.sectionTitle}>📶 库</p>
                 <div className={styles.animTopBar}>
@@ -483,7 +776,94 @@ const TripoLayout = ({ children }: { children: React.ReactNode }) => {
           className={styles.sidebarRight}
           style={{ width: `${panelWidth}px` }}
         >
-          <div>右侧面板</div>
+          <div className={styles.topnav}>资产</div>
+          <div className={styles.upgrade}>
+            <span className={styles.upgradeText}>
+              升级即可解锁无限模型下载、
+              <br />
+              Ultra模型生成及更多高级功能，
+              <br />
+              最高5折优惠
+            </span>
+            <button className={styles.upBtn}>升级</button>
+          </div>
+          <div className={styles.navWrap}>
+            <div className={styles.btnGroup}>
+              {/* 四宫格换成自己的图片 */}
+              <div className={styles.iconBtn}>
+                <img
+                  src="/image/sgg.png"
+                  alt=""
+                  style={{
+                    backgroundColor: "white",
+                    borderRadius: 20,
+                    width: 31,
+                    height: 31,
+                  }}
+                />
+              </div>
+
+              <div className={styles.iconBtn}>
+                <img src="/image/Gc_115_face-Star.png" alt="" />
+              </div>
+            </div>
+
+            <div className={styles.singleBtn}>
+              <img src="/image/sl.png" alt="" />
+            </div>
+
+            <div className={styles.manageBtn}>
+              <img src="/image/gli.png" alt="" />
+              <span>管理</span>
+            </div>
+          </div>
+          <div className={styles.gridContainer}>
+            <div className={styles.modelon}>
+              <button>
+                <img
+                  src="/image/up.png"
+                  alt=""
+                  style={{ width: 15, height: 15 }}
+                />
+              </button>
+              <p>上传3D模型</p>
+              <span>
+                OBJ、FBX、STL、
+                <br />
+                GLB <br />
+                大小≤150MB
+              </span>
+            </div>
+            <div className={styles.modelone}>
+              <img src="/image/1 (1).png" alt="" />
+              <button>i</button>
+            </div>
+            <div className={styles.modelone}>
+              <img src="/image/1 (2).png" alt="" />
+              <button>i</button>
+            </div>
+            <div className={styles.modelone}>
+              <img src="/image/1 (3).png" alt="" />
+              <button>i</button>
+            </div>
+            <div className={styles.modelone}>
+              <img src="/image/1 (4).png" alt="" />
+              <button>i</button>
+            </div>
+            <div className={styles.modelone}>
+              <img src="/image/1 (5).png" alt="" />
+              <button>i</button>
+            </div>
+            <div className={styles.modelone}>
+              <img src="/image/1 (6).png" alt="" />
+              <button>i</button>
+            </div>
+            <div className={styles.modelone}>
+              <img src="/image/1 (7).png" alt="" />
+              <button>i</button>
+            </div>
+          </div>
+
           <div
             className={styles.resizeHandle}
             onMouseDown={handleRightMouseDown}
