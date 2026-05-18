@@ -32,6 +32,7 @@ const TripoLayout = ({ children }: { children: React.ReactNode }) => {
     aspectRatio: "1:1",
     imageCount: 4,
     style: "none",
+    fontSize: "10px",
     pose: "无",
     multiView: false,
   });
@@ -381,7 +382,7 @@ const TripoLayout = ({ children }: { children: React.ReactNode }) => {
                     >
                       {modelList.find((m) => m.value === imageForm.model)?.icon}
                     </div>
-                    <span style={{ fontSize: "16px", color: "#fff", flex: 1 }}>
+                    <span style={{ fontSize: "15px", color: "#fff", flex: 1 }}>
                       {
                         modelList.find((m) => m.value === imageForm.model)
                           ?.label

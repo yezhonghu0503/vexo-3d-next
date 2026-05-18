@@ -36,6 +36,7 @@ var TripoLayout = function (_a) {
         aspectRatio: "1:1",
         imageCount: 4,
         style: "none",
+        fontSize: "10px",
         pose: "无",
         multiView: false
     }), imageForm = _h[0], setImageForm = _h[1];
@@ -279,7 +280,7 @@ var TripoLayout = function (_a) {
                                         justifyContent: "center",
                                         fontSize: "16px"
                                     } }, (_b = modelList.find(function (m) { return m.value === imageForm.model; })) === null || _b === void 0 ? void 0 : _b.icon),
-                                react_1["default"].createElement("span", { style: { fontSize: "16px", color: "#fff", flex: 1 } }, (_c = modelList.find(function (m) { return m.value === imageForm.model; })) === null || _c === void 0 ? void 0 : _c.label),
+                                react_1["default"].createElement("span", { style: { fontSize: "15px", color: "#fff", flex: 1 } }, (_c = modelList.find(function (m) { return m.value === imageForm.model; })) === null || _c === void 0 ? void 0 : _c.label),
                                 react_1["default"].createElement("span", { style: {
                                         fontSize: "18px",
                                         color: "#aaa",
